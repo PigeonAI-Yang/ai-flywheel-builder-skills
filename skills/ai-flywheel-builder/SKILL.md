@@ -132,6 +132,27 @@ If no lesson qualifies, say so briefly and do not write long-term memory.
 
 When files are updated, report absolute paths.
 
+## Rule Abstraction Principle
+
+Rules must be abstracted into principles, not patched with specific cases.
+
+```text
+Wrong: 禁止使用"薄母技能""证据""编辑器""归因""硬设计约束""判断成本"……（无限增长）
+Right: 交付前念一遍。你跟朋友喝咖啡的时候会不会这么说？不会就重写。
+
+Wrong: 每发现一个新问题就往禁词列表加一行。
+Right: 找到这类问题的共同根因，用一条原则覆盖整类。
+```
+
+A rule that requires constant patching is not a finished rule. It's a draft that hasn't been abstracted yet.
+
+When writing or updating any rule, check:
+1. Does this rule cover only the specific case I just saw, or the category it belongs to?
+2. Will this rule still be sufficient when a new variant of the same problem appears?
+3. Is this rule getting longer every session? If yes, it needs abstraction, not more entries.
+
+This principle applies to all rule files: SKILL.md, memory-rules.md, templates, and learning closures.
+
 ## Decision Persistence Rule
 
 When the user explicitly accepts, rejects, or裁定 a module boundary, state transition, file responsibility, output standard, naming rule, or acceptance standard, do not leave it only in conversation.
@@ -156,6 +177,14 @@ For Chinese users:
 - Use "产物" instead of `artifact` in user-facing prose.
 - Use "内容种子库" instead of "可讲资产库".
 - Keep stable technical identifiers unchanged only when they are file names, folder names, skill names, commands, or code symbols.
+- Use simplified Chinese.
+- Avoid English translation tone. Do not stack generic verbs such as "执行", "确保", "实现", "提升", "优化", "赋能", "沉淀", and "闭环" when a concrete Chinese verb is available.
+- Prefer natural Chinese, like a Chinese product manager or technical lead writing to a team.
+- Keep sentences short. Use fewer abstract nouns. Avoid hard-translated "通过……以……" structures.
+- Keep technical terms such as LLM, HTML, Markdown, and API when useful, but explain them in natural Chinese.
+- For English words that have established Chinese equivalents, always use Chinese in user-facing content: prompt→提示词, workflow→工作流, evidence→依据 (not 证据, which is legal/law-enforcement language).
+- For programming terms used in the wrong context, always correct them: "打开编辑器" (writing context) → "打开文档".
+- Before final delivery, reread user-facing Chinese. If a sentence sounds like machine translation, rewrite it in native Chinese.
 
 ## Path Rule
 
@@ -281,6 +310,29 @@ Routing rule:
 - `branch`: record as later queue unless the user explicitly asks to do it now.
 - `correct`: route to product self-feedback and update rules/templates/docs/roadmap if needed.
 - `noise`: reduce variables and ask one smallest necessary question.
+
+### Correction Must Write Back Rule
+
+When the user points out a quality defect in system output — wrong terminology, unnatural language, incorrect format, missing content, bad tone, or any output that doesn't meet user expectations — the correction MUST be written into the relevant rule file before or alongside the content fix. Do not fix the content without fixing the rule.
+
+Hard gates:
+
+```text
+1. Did the user say something was wrong with the output?
+2. Is this a systemic issue (would happen again in the next run)?
+3. If yes to both: write the rule FIRST, then fix the content.
+
+Example violations:
+- User says "这个词不对" → agent fixes the word in the article but does NOT update the jargon list in SKILL.md → VIOLATION
+- User says "这句话不像人话" → agent rewrites the sentence but does NOT update the language rule → VIOLATION
+- User says "缺了技术可信度" → agent adds the section but does NOT update the content structure template → VIOLATION
+```
+
+This rule overrides any implicit judgment that "the fix is small, no rule update needed." Size of fix does not determine whether a rule is needed. Systemic recurrence determines it.
+
+After writing the rule, report the absolute path of the updated rule file.
+
+The `correct` signal in Input Intent Recheck now implies a mandatory rule-check, not an optional one. "if needed" means "if the correction reveals a gap in existing rules" — and by default, any user correction reveals a gap, because if the rule already covered it, the error wouldn't have occurred.
 
 If the user provides a process, product, directory, skill, handbook, draft, tool, workflow, screenshot, URL, feedback, error, stuck point, or explicit裁定, treat it as new material first. Do not reject it only because current state is waiting for another kind of input.
 

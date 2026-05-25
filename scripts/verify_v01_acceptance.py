@@ -43,6 +43,8 @@ REQUIRED_MARKERS = {
         "missing_requirements",
         "content_package",
         "feedback_attribution",
+        "Use simplified Chinese",
+        "machine translation",
     ],
     "skills/flywheel-orchestrator/SKILL.md": [
         "Highest Priority",
@@ -59,6 +61,9 @@ REQUIRED_MARKERS = {
         "HTML 优先",
         "HTML 主题",
         "## 当前稿件状态",
+        "事实约束",
+        "事实锚定表",
+        "补采问题只能放在稿末",
         "## 信息增量",
         "## 内容框架稿",
         "读者层级与判断主线",
@@ -81,16 +86,23 @@ REQUIRED_MARKERS = {
         "产品发布长文协议",
         "信息增量协议",
         "框架先行协议",
+        "事实锚定协议",
+        "产品目录交互顺序硬规则",
+        "先生成完整内容框架初稿",
         "公开稿与后台记录隔离",
         "判断优先规则",
         "实践细节补采",
         "发布稿自检",
         "外部语言闸门",
+        "中文输出风格硬规则",
+        "英文直译腔",
         "不要只有后台文件而没有用户可见主交付物",
     ],
     "templates/content-package.md": [
         "## 产品发布长文协议",
         "## 产品目录材料分层",
+        "## 产品目录交互顺序",
+        "## 事实锚定表",
         "站在外部读者视角提取到的信息",
         "## 信息增量自检",
         "## 内容框架稿",
@@ -111,6 +123,14 @@ REQUIRED_MARKERS = {
         "可读的产品介绍不等于可发布内容",
         "目录本身就是高密度材料",
         "外部读者视角",
+        "英文直译腔",
+    ],
+    "scripts/verify_product_directory_smoke.py": [
+        "Product directory smoke test",
+        "question-first output",
+        "已生成完整内容框架初稿",
+        "content-flywheel-run.html",
+        "content-flywheel-run.md",
     ],
     "docs/01_ARCHITECTURE.md": [
         "Fixed State Values",
@@ -279,6 +299,28 @@ def verify_run_dir(run_dir: Path) -> list[str]:
         run_id = extract_section_value(closure_text, "## run_id")
     else:
         run_id = run_dir.name
+
+    content_package_path = run_dir / "content-package.md"
+    if content_package_path.exists():
+        content_package_text = content_package_path.read_text(encoding="utf-8")
+        required_content_package_markers = [
+            "## 产品目录交互顺序",
+            "已生成完整内容框架初稿",
+            "已生成用户可读 HTML",
+            "已生成可编辑 Markdown",
+            "没有扫完目录后先问用户问题",
+            "## 事实锚定表",
+            "用户提交了什么材料",
+            "系统先交付了什么",
+            "交付物有哪些格式",
+            "用户看完后补充了什么",
+            "未锚定事实",
+        ]
+        for marker in required_content_package_markers:
+            if marker not in content_package_text:
+                errors.append(
+                    f"{content_package_path}: missing fact anchoring marker: {marker}"
+                )
 
     workspace_root = find_workspace_root(run_dir)
     if workspace_root is None:
