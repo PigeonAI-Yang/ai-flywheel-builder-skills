@@ -1,3 +1,5 @@
+<img src="assets/header.png" alt="AI Flywheel Builder" width="100%">
+
 # AI Flywheel Builder
 
 把做过的 AI 实践，持续变成值得传播的内容。
